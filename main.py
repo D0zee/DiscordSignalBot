@@ -2,8 +2,6 @@ import discord
 from bs4 import BeautifulSoup
 from scrapingant_client import ScrapingAntClient
 from html.parser import HTMLParser
-from discord.ext import commands
-import os
 import time
 
 client = discord.Client()
@@ -18,7 +16,6 @@ class MyHTMLParser(HTMLParser):
         global last_is_printed
         if tag == "img":
             for name, value in attrs:
-                # If href is defined, print it.
                 if name == "src" and value[0:12] == "https://test" and not last_is_printed:
                     global image
                     image = value
@@ -30,9 +27,9 @@ def solve():
     global image
     url = "https://www.launchmynft.io/collections/3p26iJMi3azuxQyrDWwziQ4y6uM4grbVtmgL33CohDwu/wIXhZYviMOG8Fg8LZRcK"
 
-    client = ScrapingAntClient(token='670e6757c7a14a70953c07a6b4611a24')
+    parser_image = ScrapingAntClient(token='670e6757c7a14a70953c07a6b4611a24')
 
-    page_content = client.general_request(url).content
+    page_content = parser_image.general_request(url).content
 
     parser = MyHTMLParser()
     parser.feed(page_content)
@@ -47,24 +44,29 @@ def solve():
     return [result_text, image]
 
 
-delay = 0
-
-
-@client.event
-async def on_ready():
-    print("OK".format(client))
+delay = 60
+text_from_bot = "last nft was minted:"
 
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('run'):
+    global text_from_bot
+
+    if message.content.startswith('!change_text'):
+        text_from_bot = message.content[13:]
+
+    if message.content.startswith('!run'):
+        global last_text
+        last_text = ""
         while True:
-            time.sleep(delay)
             result = solve()
-            print(result[0], result[1])
-            await message.channel.send("last nft was minted:")
-            await message.channel.send(result[0])
-            await message.channel.send(result[1])
+            # print(result[0], result[1])
+            if last_text == "" or (result[0] != last_text):
+                last_text = result[0]
+                await message.channel.send(text_from_bot)
+                await message.channel.send(result[0])
+                await message.channel.send(result[1])
+            time.sleep(delay)
 
 
-client.run("TOKEN")
+client.run("Token")
