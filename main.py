@@ -4,6 +4,8 @@ from scrapingant_client import ScrapingAntClient
 from html.parser import HTMLParser
 import time
 
+TOKEN_SCRAPING_API = ""
+TOKEN_DISCORD = ""
 client = discord.Client()
 last_is_printed = False
 
@@ -27,7 +29,7 @@ def solve():
     global image
     url = "https://www.launchmynft.io/collections/3p26iJMi3azuxQyrDWwziQ4y6uM4grbVtmgL33CohDwu/wIXhZYviMOG8Fg8LZRcK"
 
-    parser_image = ScrapingAntClient(token='670e6757c7a14a70953c07a6b4611a24')
+    parser_image = ScrapingAntClient(token=TOKEN_SCRAPING_API)
 
     page_content = parser_image.general_request(url).content
 
@@ -60,7 +62,6 @@ async def on_message(message):
         last_text = ""
         while True:
             result = solve()
-            # print(result[0], result[1])
             if last_text == "" or (result[0] != last_text):
                 last_text = result[0]
                 await message.channel.send(text_from_bot)
@@ -69,4 +70,4 @@ async def on_message(message):
             time.sleep(delay)
 
 
-client.run("Token")
+client.run(TOKEN_DISCORD)
