@@ -4,8 +4,8 @@ from scrapingant_client import ScrapingAntClient
 from html.parser import HTMLParser
 import time
 
-TOKEN_SCRAPING_API = "670e6757c7a14a70953c07a6b4611a24"
-TOKEN_DISCORD = "OTU1NzY0NDg4MTg1OTk1MjY1.YjmbCw.ukQyA2ENffybJPHpIDdaqwVhSUM"
+TOKEN_SCRAPING_API = ""
+TOKEN_DISCORD = ""
 client = discord.Client()
 last_is_printed = False
 
