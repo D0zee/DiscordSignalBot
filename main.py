@@ -4,8 +4,8 @@ from scrapingant_client import ScrapingAntClient
 from html.parser import HTMLParser
 import time
 
-TOKEN_SCRAPING_API = ""
-TOKEN_DISCORD = ""
+TOKEN_SCRAPING_API = "670e6757c7a14a70953c07a6b4611a24"
+TOKEN_DISCORD = "OTU1NzY0NDg4MTg1OTk1MjY1.YjmbCw.ukQyA2ENffybJPHpIDdaqwVhSUM"
 client = discord.Client()
 last_is_printed = False
 
@@ -50,24 +50,26 @@ delay = 60
 text_from_bot = "last nft was minted:"
 
 
+async def check_changes(message):
+    global last_text
+    last_text = ""
+    while True:
+        result = solve()
+        if last_text == "" or (result[0] != last_text):
+            last_text = result[0]
+            await message.channel.send(text_from_bot)
+            await message.channel.send(result[0])
+            await message.channel.send(result[1])
+        time.sleep(delay)
+
+
 @client.event
 async def on_message(message):
     global text_from_bot
-
     if message.content.startswith('!change_text'):
         text_from_bot = message.content[13:]
-
     if message.content.startswith('!run'):
-        global last_text
-        last_text = ""
-        while True:
-            result = solve()
-            if last_text == "" or (result[0] != last_text):
-                last_text = result[0]
-                await message.channel.send(text_from_bot)
-                await message.channel.send(result[0])
-                await message.channel.send(result[1])
-            time.sleep(delay)
+        await check_changes(message)
 
 
 client.run(TOKEN_DISCORD)
